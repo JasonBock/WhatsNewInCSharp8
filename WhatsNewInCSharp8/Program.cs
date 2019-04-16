@@ -6,9 +6,10 @@ namespace WhatsNewInCSharp8
    class Program
    {
 		static void Main() =>
-			Program.DemonstrateNullableReferenceTypes();
+			//Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateEnhancedUsing();
 			//Program.DemonstrateRangesAndIndexes();
+			Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
 			//Program.DemonstrateStaticLocalFunctions();
 
@@ -68,9 +69,27 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"Just the third to the last with an index: {string.Join(", ", values[index])}");
 		}
 
-		private static void DemonstrateDefaultInDeconstruction() { }
+		private static void DemonstrateNullCoalescingAssigments()
+		{
+			string? GetName() => "Jason";
 
-		private static void DemonstrateNullCoalescingAssigments() { }
+			string? GetNullName() => null;
+
+			var name = GetNullName();
+
+			// Old way:
+			/*
+			if (name == null)
+			{
+				name = GetName();
+			}
+			*/
+
+			// New way:
+			name ??= GetName();
+
+			Console.Out.WriteLine(name);
+		}
 
 		// https://github.com/dotnet/csharplang/issues/1630
 		private static void DemonstrateVerbatimInterpolatedStrings()
