@@ -6,17 +6,23 @@ namespace WhatsNewInCSharp8
    class Program
    {
 		static void Main() =>
-			//Program.DemonstrateNullableReferenceTypes();
+			Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateEnhancedUsing();
-			Program.DemonstrateRanges();
+			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
+			//Program.DemonstrateStaticLocalFunctions();
 
 		/*
 		static async Task Main() =>
 			await Program.DemonstrateAsyncStreams();
 		*/
 
-		private static void DemonstrateNullableReferenceTypes() { }
+		private static void DemonstrateNullableReferenceTypes()
+		{
+			//var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
+			var person = new Person();
+			Console.Out.WriteLine($"{person.Name}, {person.Id}");
+		}
 
 		private static void DemonstrateRecursivePatterns() { }
 
@@ -44,7 +50,7 @@ namespace WhatsNewInCSharp8
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/ranges.md
-		private static void DemonstrateRanges()
+		private static void DemonstrateRangesAndIndexes()
 		{
 			var values = new int[] { 3, 1, 4, 1, 5, 9, 2, 6, 5 };
 
@@ -57,7 +63,9 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"Just the third to the last: {string.Join(", ", values[^3])}");
 
 			var range = new Range(2, 5);
+			var index = new Index(3, true);
 			Console.Out.WriteLine($"From the 2nd to the 5th (exclusive) with a range: {string.Join(", ", values[range])}");
+			Console.Out.WriteLine($"Just the third to the last with an index: {string.Join(", ", values[index])}");
 		}
 
 		private static void DemonstrateDefaultInDeconstruction() { }
@@ -75,6 +83,18 @@ namespace WhatsNewInCSharp8
 			Console.WriteLine(newWay);
 		}
 
-		private static void DemonstrateStaticLocalFunctions() { }
+		// https://github.com/dotnet/csharplang/issues/1565
+		private static void DemonstrateStaticLocalFunctions()
+		{
+			var value = new Random().Next();
+
+			int CanCaptureLocal() => value;
+
+			static int CannotCaptureLocal() => new Random().Next();
+
+			Console.Out.WriteLine($"{nameof(value)} - {CanCaptureLocal()}");
+			Console.Out.WriteLine($"{nameof(CanCaptureLocal)} - {CanCaptureLocal()}");
+			Console.Out.WriteLine($"{nameof(CannotCaptureLocal)} - {CannotCaptureLocal()}");
+		}
 	}
 }
