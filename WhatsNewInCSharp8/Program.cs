@@ -6,9 +6,10 @@ namespace WhatsNewInCSharp8
    class Program
    {
 		static void Main() =>
-			//Program.DemonstrateNullableReferenceTypes();
-			Program.DemonstrateRecursivePatterns();
+			Program.DemonstrateNullableReferenceTypes();
+			//Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateEnhancedUsing();
+			// Don't forget about Program.DemonstrateAsyncStreams()...
 			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
@@ -22,15 +23,15 @@ namespace WhatsNewInCSharp8
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
 		private static void DemonstrateNullableReferenceTypes()
 		{
-			//var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
-			var person = new Person();
+			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
+
 			Console.Out.WriteLine($"{person.Name}, {person.Id}");
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
 		private static void DemonstrateRecursivePatterns()
 		{
-			var person = new Person { Id = Guid.NewGuid()/*, Name = "Jason"*/ };
+			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
 
 			var value = person switch
 			{
@@ -44,15 +45,6 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"{nameof(value)} is {value}");
 		}
 
-		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/async-streams.md
-		private static async Task DemonstrateAsyncStreams()
-		{
-			await foreach(var value in new AsynchronousRandom(10))
-			{
-				await Console.Out.WriteLineAsync(value.ToString());
-			}
-		}
-
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/using.md
 		private static void DemonstrateEnhancedUsing()
 		{
@@ -64,6 +56,15 @@ namespace WhatsNewInCSharp8
 			{
 				Console.WriteLine($"I am within the disposable scope of {nameof(DisposableRefStruct)}");
 				Console.WriteLine($"I am still within the disposable scope of {nameof(DisposableRefStruct)}");
+			}
+		}
+
+		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/async-streams.md
+		private static async Task DemonstrateAsyncStreams()
+		{
+			await foreach(var value in new AsynchronousRandom(10))
+			{
+				await Console.Out.WriteLineAsync(value.ToString());
 			}
 		}
 
@@ -84,6 +85,14 @@ namespace WhatsNewInCSharp8
 			var index = new Index(3, true);
 			Console.Out.WriteLine($"From the 2nd to the 5th (exclusive) with a range: {string.Join(", ", values[range])}");
 			Console.Out.WriteLine($"Just the third to the last with an index: {string.Join(", ", values[index])}");
+
+			var rangeCopy = values[0..3];
+			rangeCopy[0] = 22;
+			Console.Out.WriteLine($"Changing rangeCopy[0]: {values[0]}");
+
+			var rangeSlice = values.AsSpan()[0..3];
+			rangeSlice[0] = 22;
+			Console.Out.WriteLine($"Changing rangeSlice[0]: {values[0]}");
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/null-coalescing-assignment.md
