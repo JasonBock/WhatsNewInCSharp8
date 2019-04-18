@@ -9,4 +9,4 @@ namespace WhatsNewInCSharp8
 		public string? Name { get; set; }
 	}
 }
-#nullable enable
+//#nullable enable

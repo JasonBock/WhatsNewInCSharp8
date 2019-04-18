@@ -7,9 +7,10 @@ namespace WhatsNewInCSharp8
    {
 		static void Main() =>
 			//Program.DemonstrateNullableReferenceTypes();
+			Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateEnhancedUsing();
 			//Program.DemonstrateRangesAndIndexes();
-			Program.DemonstrateNullCoalescingAssigments();
+			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
 			//Program.DemonstrateStaticLocalFunctions();
 
@@ -18,6 +19,7 @@ namespace WhatsNewInCSharp8
 			await Program.DemonstrateAsyncStreams();
 		*/
 
+		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
 		private static void DemonstrateNullableReferenceTypes()
 		{
 			//var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
@@ -25,7 +27,22 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"{person.Name}, {person.Id}");
 		}
 
-		private static void DemonstrateRecursivePatterns() { }
+		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
+		private static void DemonstrateRecursivePatterns()
+		{
+			var person = new Person { Id = Guid.NewGuid()/*, Name = "Jason"*/ };
+
+			var value = person switch
+			{
+				{ Name: var name } => name switch
+					{
+						null => person.Id.ToString().Length,
+						{ Length: var length } => length,
+					}
+			};
+
+			Console.Out.WriteLine($"{nameof(value)} is {value}");
+		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/async-streams.md
 		private static async Task DemonstrateAsyncStreams()
@@ -69,6 +86,7 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"Just the third to the last with an index: {string.Join(", ", values[index])}");
 		}
 
+		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/null-coalescing-assignment.md
 		private static void DemonstrateNullCoalescingAssigments()
 		{
 			string? GetName() => "Jason";
