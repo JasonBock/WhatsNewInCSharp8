@@ -6,14 +6,14 @@ namespace WhatsNewInCSharp8
    class Program
    {
 		static void Main() =>
-			Program.DemonstrateNullableReferenceTypes();
+			//Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateEnhancedUsing();
 			// Don't forget about Program.DemonstrateAsyncStreams()...
 			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
-			//Program.DemonstrateStaticLocalFunctions();
+			Program.DemonstrateStaticLocalFunctions();
 
 		/*
 		static async Task Main() =>
@@ -25,7 +25,7 @@ namespace WhatsNewInCSharp8
 		{
 			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
 
-			Console.Out.WriteLine($"{person.Name}, {person.Id}");
+			Console.Out.WriteLine($"{person.Name.Length}, {person.Id}");
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
@@ -39,7 +39,7 @@ namespace WhatsNewInCSharp8
 					{
 						null => person.Id.ToString().Length,
 						{ Length: var length } => length,
-					}
+					},
 			};
 
 			Console.Out.WriteLine($"{nameof(value)} is {value}");

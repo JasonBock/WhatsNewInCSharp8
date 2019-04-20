@@ -19,7 +19,7 @@ namespace WhatsNewInCSharp8
 			for(var i = 0; i < this.count; i++)
 			{
 				yield return random.Next();
-				await Task.Delay(random.Next(100, 500));
+				await Task.Delay(random.Next(100, 1000));
 			}
 		}
 	}
