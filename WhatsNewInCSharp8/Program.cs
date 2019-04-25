@@ -6,18 +6,20 @@ namespace WhatsNewInCSharp8
    class Program
    {
 		static void Main() =>
-			//Program.DemonstrateNullableReferenceTypes();
+			Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateEnhancedUsing();
-			// Don't forget about Program.DemonstrateAsyncStreams()...
+			// Don't forget about Program.DemonstrateAsyncDisposable()
+			// and Program.DemonstrateAsyncStreams()...
 			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
-			Program.DemonstrateStaticLocalFunctions();
+			//Program.DemonstrateStaticLocalFunctions();
 
 		/*
 		static async Task Main() =>
-			await Program.DemonstrateAsyncStreams();
+			await Program.DemonstrateAsynchronousDisposable();
+			//await Program.DemonstrateAsynchronousStreams();
 		*/
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
@@ -49,18 +51,26 @@ namespace WhatsNewInCSharp8
 		private static void DemonstrateEnhancedUsing()
 		{
 			using var _ = new DisposableService();
-			Console.WriteLine($"I am within the disposable scope of {nameof(DisposableService)}");
-			Console.WriteLine($"I am still within the disposable scope of {nameof(DisposableService)}");
+			Console.Out.WriteLine($"I am within the disposable scope of {nameof(DisposableService)}");
+			Console.Out.WriteLine($"I am still within the disposable scope of {nameof(DisposableService)}");
 
 			using (var refStruct = new DisposableRefStruct())
 			{
-				Console.WriteLine($"I am within the disposable scope of {nameof(DisposableRefStruct)}");
-				Console.WriteLine($"I am still within the disposable scope of {nameof(DisposableRefStruct)}");
+				Console.Out.WriteLine($"I am within the disposable scope of {nameof(DisposableRefStruct)}");
+				Console.Out.WriteLine($"I am still within the disposable scope of {nameof(DisposableRefStruct)}");
 			}
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/async-streams.md
-		private static async Task DemonstrateAsyncStreams()
+		private static async Task DemonstrateAsynchronousDisposable()
+		{
+			await using (var _ = new AsyncDisposableService())
+			await Console.Out.WriteLineAsync(
+				$"I am within the disposable scope of {nameof(AsyncDisposableService)}");
+		}
+
+		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/async-streams.md
+		private static async Task DemonstrateAsynchronousStreams()
 		{
 			await foreach(var value in new AsynchronousRandom(10))
 			{
@@ -125,8 +135,8 @@ namespace WhatsNewInCSharp8
 			var currentWay = $@"Here is the current way: {value}";
 			var newWay = @$"Here is the new way: {value}";
 
-			Console.WriteLine(currentWay);
-			Console.WriteLine(newWay);
+			Console.Out.WriteLine(currentWay);
+			Console.Out.WriteLine(newWay);
 		}
 
 		// https://github.com/dotnet/csharplang/issues/1565
