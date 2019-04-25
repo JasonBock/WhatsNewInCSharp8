@@ -6,7 +6,7 @@ namespace WhatsNewInCSharp8
    class Program
    {
 		static void Main() =>
-			Program.DemonstrateNullableReferenceTypes();
+			//Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateEnhancedUsing();
 			// Don't forget about Program.DemonstrateAsyncDisposable()
@@ -14,12 +14,12 @@ namespace WhatsNewInCSharp8
 			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
-			//Program.DemonstrateStaticLocalFunctions();
+			Program.DemonstrateStaticLocalFunctions();
 
 		/*
 		static async Task Main() =>
-			await Program.DemonstrateAsynchronousDisposable();
-			//await Program.DemonstrateAsynchronousStreams();
+			//await Program.DemonstrateAsynchronousDisposable();
+			await Program.DemonstrateAsynchronousStreams();
 		*/
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
@@ -39,8 +39,8 @@ namespace WhatsNewInCSharp8
 			{
 				{ Name: var name } => name switch
 					{
-						null => person.Id.ToString().Length,
 						{ Length: var length } => length,
+						null => person.Id.ToString().Length,
 					},
 			};
 
