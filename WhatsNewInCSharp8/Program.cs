@@ -9,13 +9,14 @@ namespace WhatsNewInCSharp8
 	class Program
    {
 		static void Main() =>
-			//Program.DemonstrateRecursivePatterns();
+			Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateNullableReferenceTypes();
-			Program.DemonstrateNullablesAndReflection();
+			//Program.DemonstrateNullablesAndReflection();
 			//Program.DemonstrateEnhancedUsing();
 			// Don't forget about Program.DemonstrateAsyncDisposable()
 			// and Program.DemonstrateAsyncStreams()...
 			//Program.DemonstrateRangesAndIndexes();
+			//Program.DemonstrateDefaultInterfaceMembers();
 			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
 			//Program.DemonstrateStaticLocalFunctions();
@@ -135,6 +136,44 @@ namespace WhatsNewInCSharp8
 			var rangeSlice = values.AsSpan()[0..3];
 			rangeSlice[0] = 22;
 			Console.Out.WriteLine($"Changing rangeSlice[0]: {values[0]}");
+		}
+
+		public interface IService
+		{
+			private static void WriteNewThing() => Console.Out.WriteLine("I did a new thing.");
+			void DoSomething();
+			void DoNewThing() => IService.WriteNewThing();
+		}
+
+		public sealed class Service 
+			: IService
+		{
+			public void DoSomething() => Console.Out.WriteLine("I did something.");
+		}
+
+		public sealed class ServiceImplementingEverything
+			: IService
+		{
+			public void DoSomething() => Console.Out.WriteLine("I did something.");
+			public void DoNewThing() => Console.Out.WriteLine("I did my own thing");
+		}
+
+		// https://github.com/dotnet/csharplang/blob/master/proposals/default-interface-methods.md
+		private static void DemonstrateDefaultInterfaceMembers()
+		{
+			var service = new Service();
+			service.DoSomething();
+
+			IService iService = new Service();
+			iService.DoSomething();
+			iService.DoNewThing();
+
+			var everythingService = new ServiceImplementingEverything();
+			everythingService.DoSomething();
+
+			IService iEverythingService = new ServiceImplementingEverything();
+			iEverythingService.DoSomething();
+			iEverythingService.DoNewThing();
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/null-coalescing-assignment.md
