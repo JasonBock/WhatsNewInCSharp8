@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace WhatsNewInCSharp8
@@ -6,21 +9,40 @@ namespace WhatsNewInCSharp8
 	class Program
    {
 		static void Main() =>
-			//Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateRecursivePatterns();
+			//Program.DemonstrateNullableReferenceTypes();
+			Program.DemonstrateNullablesAndReflection();
 			//Program.DemonstrateEnhancedUsing();
 			// Don't forget about Program.DemonstrateAsyncDisposable()
 			// and Program.DemonstrateAsyncStreams()...
 			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateNullCoalescingAssigments();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
-			Program.DemonstrateStaticLocalFunctions();
+			//Program.DemonstrateStaticLocalFunctions();
 
 		/*
 		static async Task Main() =>
 			//await Program.DemonstrateAsynchronousDisposable();
 			await Program.DemonstrateAsynchronousStreams();
 		*/
+
+		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
+		private static void DemonstrateRecursivePatterns()
+		{
+			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
+
+			var value = person switch
+			{
+				{ Name: var name }
+				=> name switch
+				{
+					{ Length: var length } => length,
+					null => person.Id.ToString().Length,
+				},
+			};
+
+			Console.Out.WriteLine($"{nameof(value)} is {value}");
+		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
 		private static void DemonstrateNullableReferenceTypes()
@@ -30,21 +52,31 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"{person.Name.Length}, {person.Id}");
 		}
 
-		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
-		private static void DemonstrateRecursivePatterns()
+		public static void ComplexParameter(Dictionary<List<string>?, KeyValuePair<Guid, byte[]?>> value) { }
+
+		private static void DemonstrateNullablesAndReflection()
 		{
-			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
+			Console.Out.WriteLine($"typeof(string).FullName - {typeof(string).FullName}");
+			Console.Out.WriteLine($"typeof(string?).FullName - {typeof(string?).FullName}");
 
-			var value = person switch
-			{
-				{ Name: var name } => name switch
-					{
-						{ Length: var length } => length,
-						null => person.Id.ToString().Length,
-					},
-			};
+			var parameter = typeof(Program).GetMethod(nameof(Program.ComplexParameter)).GetParameters()[0];
 
-			Console.Out.WriteLine($"{nameof(value)} is {value}");
+			Console.Out.WriteLine(parameter.ParameterType.FullName);
+
+			var nullableAttributeFlags =
+				(from attribute in parameter.GetCustomAttributesData()
+				 let attributeType = attribute.AttributeType
+				 where attributeType.Name == "NullableAttribute" &&
+				 attributeType.Namespace == "System.Runtime.CompilerServices" &&
+				 attribute.ConstructorArguments.Count > 0
+				 let nullableCtor = attribute.ConstructorArguments[0]
+				 select nullableCtor.ArgumentType.IsArray switch
+				 {
+					 true => ((IList<CustomAttributeTypedArgument>)nullableCtor.Value).Select(_ => (byte)_.Value).ToArray(),
+					 _ => new byte[] { (byte)nullableCtor.Value }
+				 }).First();
+
+			Console.Out.WriteLine($"{nameof(nullableAttributeFlags)} - {string.Join(", ", nullableAttributeFlags)}");
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/using.md
