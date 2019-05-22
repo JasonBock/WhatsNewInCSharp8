@@ -18,15 +18,14 @@ namespace WhatsNewInCSharp8
 			//Program.DemonstrateRangesAndIndexes();
 			//Program.DemonstrateDefaultInterfaceMembers();
 			//Program.DemonstrateNullCoalescingAssigments();
-			//Program.DemonstrateVerbatimInterpolatedStrings();
 			//Program.DemonstrateStaticLocalFunctions();
+			//Program.DemonstrateVerbatimInterpolatedStrings();
 
 		/*
 		static async Task Main() =>
-			//await Program.DemonstrateAsynchronousDisposable();
-			await Program.DemonstrateAsynchronousStreams();
+			await Program.DemonstrateAsynchronousDisposable();
+			//await Program.DemonstrateAsynchronousStreams();
 		*/
-
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
 		private static void DemonstrateRecursivePatterns()
 		{
@@ -34,8 +33,7 @@ namespace WhatsNewInCSharp8
 
 			var value = person switch
 			{
-				{ Name: var name }
-				=> name switch
+				{ Name: var name } => name switch
 				{
 					{ Length: var length } => length,
 					null => person.Id.ToString().Length,
@@ -53,7 +51,8 @@ namespace WhatsNewInCSharp8
 			Console.Out.WriteLine($"{person.Name.Length}, {person.Id}");
 		}
 
-		public static void ComplexParameter(Dictionary<List<string>?, KeyValuePair<Guid, byte[]?>> value) { }
+		public static void ComplexParameter(
+			Dictionary<List<string>?, KeyValuePair<Guid, byte[]?>> value) { }
 
 		private static void DemonstrateNullablesAndReflection()
 		{
