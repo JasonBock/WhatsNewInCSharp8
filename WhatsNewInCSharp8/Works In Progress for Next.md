@@ -77,3 +77,24 @@ ref partial struct AnotherStruct { }
 
 partial ref struct SomeStruct { }
 ```
+## Parameter null-checking
+https://github.com/dotnet/csharplang/issues/2145
+
+Changes this:
+```
+void Insert(string s) 
+{
+	if (s is null) 
+	{
+		throw new ArgumentNullException(nameof(s));
+	}
+	// ...
+}
+```
+To this:
+```
+void Insert(string s!) 
+{
+	//  ...
+}
+```

@@ -9,7 +9,7 @@ namespace WhatsNewInCSharp8
 	class Program
    {
 		static void Main() =>
-			Program.DemonstrateRecursivePatterns();
+			//Program.DemonstrateRecursivePatterns();
 			//Program.DemonstrateNullableReferenceTypes();
 			//Program.DemonstrateNullablesAndReflection();
 			//Program.DemonstrateEnhancedUsing();
@@ -21,11 +21,12 @@ namespace WhatsNewInCSharp8
 			//Program.DemonstrateStaticLocalFunctions();
 			//Program.DemonstrateVerbatimInterpolatedStrings();
 
-		/*
-		static async Task Main() =>
-			await Program.DemonstrateAsynchronousDisposable();
+
+		//static async Task Main() =>
+			//await Program.DemonstrateAsynchronousDisposable();
 			//await Program.DemonstrateAsynchronousStreams();
-		*/
+
+
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
 		private static void DemonstrateRecursivePatterns()
 		{
@@ -46,20 +47,20 @@ namespace WhatsNewInCSharp8
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
 		private static void DemonstrateNullableReferenceTypes()
 		{
-			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
+			var person = new Person { Id = Guid.NewGuid() , Name = "Jason" };
 
-			Console.Out.WriteLine($"{person.Name.Length}, {person.Id}");
+			Console.Out.WriteLine($"{person.Name!.Length}, {person.Id}");
 		}
 
 		public static void ComplexParameter(
-			Dictionary<List<string>?, KeyValuePair<Guid, byte[]?>> value) { }
+			Dictionary<List<string>, KeyValuePair<Guid, byte[]?>> value) { }
 
 		private static void DemonstrateNullablesAndReflection()
 		{
 			Console.Out.WriteLine($"typeof(string).FullName - {typeof(string).FullName}");
-			Console.Out.WriteLine($"typeof(string?).FullName - {typeof(string?).FullName}");
+			//Console.Out.WriteLine($"typeof(string?).FullName - {typeof(string?).FullName}");
 
-			var parameter = typeof(Program).GetMethod(nameof(Program.ComplexParameter)).GetParameters()[0];
+			var parameter = typeof(Program).GetMethod(nameof(Program.ComplexParameter))!.GetParameters()[0];
 
 			Console.Out.WriteLine(parameter.ParameterType.FullName);
 
@@ -72,8 +73,8 @@ namespace WhatsNewInCSharp8
 				 let nullableCtor = attribute.ConstructorArguments[0]
 				 select nullableCtor.ArgumentType.IsArray switch
 				 {
-					 true => ((IList<CustomAttributeTypedArgument>)nullableCtor.Value).Select(_ => (byte)_.Value).ToArray(),
-					 _ => new byte[] { (byte)nullableCtor.Value }
+					 true => ((IList<CustomAttributeTypedArgument>)nullableCtor.Value!).Select(_ => (byte)_.Value!).ToArray(),
+					 _ => new byte[] { (byte)nullableCtor.Value! }
 				 }).First();
 
 			Console.Out.WriteLine($"{nameof(nullableAttributeFlags)} - {string.Join(", ", nullableAttributeFlags)}");
@@ -117,7 +118,7 @@ namespace WhatsNewInCSharp8
 
 			Console.Out.WriteLine($"Everything: {string.Join(", ", values[..])}");
 			Console.Out.WriteLine($"From the 2nd to the 5th (exclusive): {string.Join(", ", values[2..5])}");
-			Console.Out.WriteLine($"Everything after the 3rd: {string.Join(", ", values[3..])}");
+			Console.Out.WriteLine($"Everything after the 3rd (including the 3rd): {string.Join(", ", values[3..])}");
 			Console.Out.WriteLine($"Everything except the last: {string.Join(", ", values[..^1])}");
 			Console.Out.WriteLine($"Just the last: {string.Join(", ", values[^1])}");
 			Console.Out.WriteLine($"Just the second to the last: {string.Join(", ", values[^2])}");
