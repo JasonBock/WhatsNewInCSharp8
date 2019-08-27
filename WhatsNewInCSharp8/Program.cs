@@ -7,53 +7,82 @@ using System.Threading.Tasks;
 namespace WhatsNewInCSharp8
 {
 	class Program
-   {
+	{
 		static void Main() =>
-			//Program.DemonstrateRecursivePatterns();
-			//Program.DemonstrateNullableReferenceTypes();
-			//Program.DemonstrateNullablesAndReflection();
-			//Program.DemonstrateEnhancedUsing();
-			// Don't forget about Program.DemonstrateAsyncDisposable()
-			// and Program.DemonstrateAsyncStreams()...
-			//Program.DemonstrateRangesAndIndexes();
-			//Program.DemonstrateDefaultInterfaceMembers();
-			//Program.DemonstrateNullCoalescingAssigments();
-			//Program.DemonstrateStaticLocalFunctions();
-			//Program.DemonstrateVerbatimInterpolatedStrings();
-
+			Program.DemonstratePatterns();
+		//Program.DemonstrateErrorPatterns();
+		//Program.DemonstrateNullableReferenceTypes();
+		//Program.DemonstrateNullablesAndReflection();
+		//Program.DemonstrateEnhancedUsing();
+		// Don't forget about Program.DemonstrateAsyncDisposable()
+		// and Program.DemonstrateAsyncStreams()...
+		//Program.DemonstrateRangesAndIndexes();
+		//Program.DemonstrateDefaultInterfaceMembers();
+		//Program.DemonstrateNullCoalescingAssigments();
+		//Program.DemonstrateStaticLocalFunctions();
+		//Program.DemonstrateVerbatimInterpolatedStrings();
 
 		//static async Task Main() =>
-			//await Program.DemonstrateAsynchronousDisposable();
-			//await Program.DemonstrateAsynchronousStreams();
+		//await Program.DemonstrateAsynchronousDisposable();
+		//await Program.DemonstrateAsynchronousStreams();
 
+		private static IAnimal GetAnimal() =>
+			new Random().Next(0, 2) == 0 ? new Dog() : (IAnimal)(new Cat());
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/patterns.md
-		private static void DemonstrateRecursivePatterns()
+		private static void DemonstratePatterns()
 		{
-			var person = new Person { Id = Guid.NewGuid(), Name = "Jason" };
+			var animal = Program.GetAnimal();
+			var mood = new Random().Next(0, 2);
 
-			var value = person switch
+			Console.Out.WriteLine(animal switch
 			{
-				{ Name: var name } => name switch
-				{
-					{ Length: var length } => length,
-					null => person.Id.ToString().Length,
-				},
+				Dog _ => "Woof",
+				Cat _ when mood == 0 => "Meow",
+				_ => "Hiss"
+			});
+		}
+
+		private static IResult<int> Divide(int x, int y)
+		{
+			if (y != 0)
+			{
+				return new Result<int>(x / y);
+			}
+			else
+			{
+				return new Error<int>("Can't divide by zero.");
+			}
+		}
+
+		private static void DemonstrateErrorPatterns()
+		{
+			_ = Program.Divide(6, 3) switch
+			{
+				Result<int> result => Results.Complete(() => { Console.Out.WriteLine($"Result: {result.Value}"); }),
+				Error<int> error => Results.Complete(() => { Console.Out.WriteLine($"Error: {error.Message}"); }),
+				_ => None.Instance
 			};
 
-			Console.Out.WriteLine($"{nameof(value)} is {value}");
+			_ = Program.Divide(6, 0) switch
+			{
+				Result<int> result => Results.Complete(() => { Console.Out.WriteLine($"Result: {result.Value}"); }),
+				Error<int> error => Results.Complete(() => { Console.Out.WriteLine($"Error: {error.Message}"); }),
+				_ => None.Instance
+			};
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/nullable-reference-types.md
 		private static void DemonstrateNullableReferenceTypes()
 		{
-			var person = new Person { Id = Guid.NewGuid() , Name = "Jason" };
+			var person = new Person { Id = Guid.NewGuid()/*, Name = "Jason"*/ };
 
-			Console.Out.WriteLine($"{person.Name!.Length}, {person.Id}");
+			Console.Out.WriteLine($"{person.Name?.Length}, {person.Id}");
 		}
 
 		public static void ComplexParameter(
-			Dictionary<List<string>, KeyValuePair<Guid, byte[]?>> value) { }
+			Dictionary<List<string>, KeyValuePair<Guid, byte[]?>> value)
+		{ }
 
 		private static void DemonstrateNullablesAndReflection()
 		{
@@ -98,14 +127,14 @@ namespace WhatsNewInCSharp8
 		private static async Task DemonstrateAsynchronousDisposable()
 		{
 			await using (var _ = new AsyncDisposableService())
-			await Console.Out.WriteLineAsync(
-				$"I am within the disposable scope of {nameof(AsyncDisposableService)}");
+				await Console.Out.WriteLineAsync(
+					$"I am within the disposable scope of {nameof(AsyncDisposableService)}");
 		}
 
 		// https://github.com/dotnet/csharplang/blob/master/proposals/csharp-8.0/async-streams.md
 		private static async Task DemonstrateAsynchronousStreams()
 		{
-			await foreach(var value in new AsynchronousRandom(10))
+			await foreach (var value in new AsynchronousRandom(10))
 			{
 				await Console.Out.WriteLineAsync(value.ToString());
 			}
@@ -145,7 +174,7 @@ namespace WhatsNewInCSharp8
 			void DoNewThing() => IService.WriteNewThing();
 		}
 
-		public sealed class Service 
+		public sealed class Service
 			: IService
 		{
 			public void DoSomething() => Console.Out.WriteLine("I did something.");

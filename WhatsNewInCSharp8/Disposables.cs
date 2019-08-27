@@ -19,7 +19,7 @@ namespace WhatsNewInCSharp8
 	public sealed class AsyncDisposableService
 		: IAsyncDisposable
 	{
-		public async ValueTask DisposeAsync() => 
+			public async ValueTask DisposeAsync() => 
 			await Console.Out.WriteLineAsync(
 				$"{nameof(AsyncDisposableService)} - I am disposed.");
 	}
